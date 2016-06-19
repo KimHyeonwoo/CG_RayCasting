@@ -1,5 +1,8 @@
 #ifndef POINT_H
 #define POINT_H
+#include <iostream>
+
+using namespace std;
 
 class Point {
 	public:
@@ -11,9 +14,11 @@ class Point {
 		float operator* (const Point& p);
 		Point operator* (const float& f);
 		Point operator/ (const float& f);
-		Point normalize ();
+    bool operator== (const Point& p);
+    Point normalize ();
 		Point crossProduct (Point p);
 		float length();
+    void print();
 };
 
 #endif

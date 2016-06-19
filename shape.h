@@ -5,8 +5,8 @@
 
 class Shape {
 	public:
-		virtual Point raycastHit (Ray ray);
-		virtual Point getNormal (Point p);
+		Point raycastHit (Ray ray, Point noHit);
+		Point getNormal (Point p);
 };
 
 #endif

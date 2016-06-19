@@ -6,6 +6,7 @@ class Ray {
 	public:
 		Point origin;
 		Point dir;
+    Ray (Point origin, Point target);
 };
 
 #endif

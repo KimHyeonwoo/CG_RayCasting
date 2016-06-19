@@ -9,8 +9,9 @@ class Sphere : public Shape {
 	public:
 		Point origin;
 		float radius;
-		virtual Point raycastHit (Ray ray);
-		virtual Point getNormal (Point p);
+		Sphere (Point o, float r);
+    Point raycastHit (Ray ray, Point noHit);
+		Point getNormal (Point p);
 };
 
 #endif

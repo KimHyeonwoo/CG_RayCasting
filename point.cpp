@@ -35,6 +35,10 @@ Point Point :: operator/ (const float& f) {
 	return ret;
 }
 
+bool Point :: operator== (const Point& p) {
+  return (x == p.x) && (y == p.y) && (z == p.z);
+}
+
 Point Point :: normalize() {
 	float length = sqrt (pow (x, 2) + pow (y, 2) + pow (z, 2));
 	if (length != 0) {
@@ -54,4 +58,6 @@ float Point :: length() {
 	return sqrt (pow (x, 2) + pow (y, 2) + pow (z, 2));
 }
 
-
+void Point :: print() {
+  cout << x << " " << y << " " << z << endl;
+}

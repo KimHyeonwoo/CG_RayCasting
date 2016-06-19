@@ -1,38 +1,43 @@
 #include "sphere.h"
 
-Point Sphere :: raycastHit (Ray ray) {
+Sphere :: Sphere (Point o, float r) {
+  origin = o;
+  radius = r;
+}
+
+Point Sphere :: raycastHit (Ray ray, Point noHit) {
 	float b = ray.dir * (origin - ray.origin);
 	float c = (origin - ray.origin) * (origin - ray.origin) - radius * radius;
-	
-	if (c > 0) {
-		if (b - sqrt (c) > 0) {
-			return ray.origin + ray.dir * (b - sqrt (c));
+
+  //ray.dir.print();
+  cout << b << " " << sqrt(c) << endl;
+
+	if (pow (b, 2) - c > 0) {
+		if (b - sqrt (pow (b, 2) - c) > 0) {
+			return ray.origin + ray.dir * (b - sqrt (pow (b, 2) - c));
 		}
 
-		else if (b + sqrt (c) > 0) {
-			return ray.origin + ray.dir * (b + sqrt (c));
+		else if (b + sqrt (pow (b, 2) - c) > 0) {
+			return ray.origin + ray.dir * (b + sqrt (pow (b, 2) - c));
 		}
 
 		else {
-			Point ret;
-			return ret;
+			return noHit;
 		}
 	} 
 	
-	else if (c == 0) {
+	else if (pow (b, 2) - c == 0) {
 		if (b > 0) {
 			return ray.origin + ray.dir * b;
 		}
 
 		else {
-			Point ret;
-			return ret;
+			return noHit;
 		}
 	} 
 
 	else {
-		Point ret;
-		return ret;
+		return noHit;
 	}
 }
 
