@@ -3,12 +3,14 @@
 #include "ray.h"
 #include "shape.h"
 #include "sphere.h"
+#include "triangle.h"
 #include <vector>
 
 #define SIZE 500
 
 Point camera (SIZE / 2, SIZE / 2, SIZE);
 vector <Sphere> sphereList;
+vector <Triangle> triangleList;
 
 int raycast (int i, int j);
 
@@ -26,6 +28,12 @@ int main() {
   sphereList.push_back(s1); 
   sphereList.push_back(s2); 
   sphereList.push_back(s3); 
+
+  Point p1 (300, 250, 0);
+  Point p2 (400, 250, 0);
+  Point p3 (400, 350, 0);
+  Triangle t1 (p1, p2, p3);
+  triangleList.push_back(t1);
 
   for (int i = 0; i < SIZE; i++) {
     for (int j = 0; j < SIZE; j++) {
@@ -51,6 +59,11 @@ int main() {
         out (i, j)->Green = 0;
         out (i, j)->Blue = 255;
         out (i, j)->Alpha = 255;
+      } else if (minShapeIndex == 3) {
+        out (i, j)->Red = 255;
+        out (i, j)->Green = 255;
+        out (i, j)->Blue = 0;
+        out (i, j)->Alpha = 255;
       }
     }
   }
@@ -75,6 +88,17 @@ int raycast(int i, int j) {
       }
     }
   }
+
+  for (int k = 0; k < triangleList.size(); k++) {
+    Point tmp = triangleList[k].raycastHit (r, camera);
+    if (!(tmp == camera)) {
+      if (minLength > (camera - tmp).length()) {
+        minLength = (camera - tmp).length();
+        minShapeIndex = k + sphereList.size();
+      }
+    }
+  }
+
   return minShapeIndex;
   
 }
