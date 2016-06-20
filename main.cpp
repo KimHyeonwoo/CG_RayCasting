@@ -4,6 +4,8 @@
 #include "shape.h"
 #include "sphere.h"
 #include "triangle.h"
+#include "material.h"
+#include "light.h"
 #include <vector>
 
 #define SIZE 500
