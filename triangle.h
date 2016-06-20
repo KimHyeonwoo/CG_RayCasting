@@ -3,6 +3,7 @@
 #include "point.h"
 #include "ray.h"
 #include "shape.h"
+#include "material.h"
 #include <cmath>
 
 class Triangle : public Shape {
@@ -10,7 +11,8 @@ class Triangle : public Shape {
     Point p1;
     Point p2;
     Point p3;
-    Triangle (Point p1, Point p2, Point p3);
+    Material mat;
+    Triangle (Point p1, Point p2, Point p3, Material mat);
     Point raycastHit (Ray ray, Point noHit);
     Point getNormal (Point p);
 };

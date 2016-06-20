@@ -1,8 +1,9 @@
 #include "sphere.h"
 
-Sphere :: Sphere (Point o, float r) {
+Sphere :: Sphere (Point o, float r, Material mat) {
   origin = o;
   radius = r;
+  this->mat = mat;
 }
 
 Point Sphere :: raycastHit (Ray ray, Point noHit) {

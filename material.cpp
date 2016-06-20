@@ -1,6 +1,10 @@
 #include "material.h"
 
-Material :: Material (Point a, Point d, Point s, float alpha, float beta, float ka, float kd, float ks, float g) {
+Material :: Material () {
+
+}
+
+Material :: Material (Point a, Point d, Point s, float alpha, float beta, float ka, float kd, float ks, float g, float n) {
   this->ambient = a;
   this->diffuse = d;
   this->specular = s;
@@ -10,4 +14,5 @@ Material :: Material (Point a, Point d, Point s, float alpha, float beta, float 
   this->diffuseConst = kd;
   this->specularConst = ks;
   this->gloss = g;
+  this->n = n;
 }

@@ -54,6 +54,11 @@ Point Point :: crossProduct (Point p) {
 	return ret;
 }
 
+Point Point :: componentProduct (Point p) {
+  Point ret (x * p.x, y * p.y, z * p.z);
+  return ret;
+}
+
 float Point :: length() {
 	return sqrt (pow (x, 2) + pow (y, 2) + pow (z, 2));
 }

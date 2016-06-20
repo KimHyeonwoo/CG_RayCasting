@@ -17,7 +17,8 @@ class Point {
     bool operator== (const Point& p);
     Point normalize ();
 		Point crossProduct (Point p);
-		float length();
+    Point componentProduct (Point p);
+    float length();
     void print();
 };
 

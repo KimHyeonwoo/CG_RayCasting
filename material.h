@@ -13,8 +13,9 @@ class Material {
     float diffuseConst;
     float specularConst;
     float gloss;
-    tmp.print();
-    Material (Point a, Point d, Point s, float alpha, float beta, float ka, float kd, float ks, float g);
+    float n;
+    Material ();
+    Material (Point a, Point d, Point s, float alpha, float beta, float ka, float kd, float ks, float g, float n);
 };  
 
 #endif

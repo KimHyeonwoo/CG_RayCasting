@@ -1,9 +1,10 @@
 #include "triangle.h"
 
-Triangle :: Triangle (Point p1, Point p2, Point p3) {
+Triangle :: Triangle (Point p1, Point p2, Point p3, Material mat) {
   this->p1 = p1;
   this->p2 = p2;
   this->p3 = p3;
+  this->mat = mat;
 }
 
 Point Triangle :: raycastHit (Ray ray, Point noHit) {

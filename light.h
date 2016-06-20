@@ -3,11 +3,12 @@
 #include "point.h"
 
 class Light {
-  Point position;
-  Point color;
-  float size;
-  Light (Point position, Point color);
-  Light (Point position, Point color, float size);
+  public:
+    Point position;
+    Point color;
+    float size;
+    Light (Point position, Point color);
+    Light (Point position, Point color, float size);
 };
 
 #endif
