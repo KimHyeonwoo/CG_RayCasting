@@ -15,7 +15,7 @@ vector <Sphere> sphereList;
 vector <Triangle> triangleList;
 vector <Light> lightList;
 
-Point raycast (int i, int j);
+Point raycast (Point source, Point target, int depth);
 void drawRect (Point p1, Point p2, Point p3, Point p4, Material mat);
 float shadowRay (Point hit, Point light);
 
@@ -62,55 +62,20 @@ int main() {
   Point p6 (-700, 1700, -500);
   Point p7 (1700, 1700, -500);
   Point p8 (1700, -700, -500);
-  Material m4 (WHITE, WHITE, WHITE, 0, 0, 0.1, 0.4, 0.5, 100, 1);
+  Material m4 (WHITE, WHITE, WHITE, 0, 0.5, 0.1, 0.4, 0.5, 100, 1);
   drawRect (p1, p2, p3, p4, m4);
   drawRect (p1, p4, p8, p5, m4);
   drawRect (p3, p7, p8, p4, m4);
   drawRect (p2, p6, p7, p3, m4);
   drawRect (p1, p5, p6, p2, m4);
 
-/*
   for (int i = 0; i < SIZE; i++) {
     for (int j = 0; j < SIZE; j++) {
-      int minShapeIndex = raycast (i, j);
-//      cout << i << " " << j << " " << minShapeIndex << endl;
-      if (minShapeIndex == -1) { // No Hit
-        out (i, j)->Red = 0;
-        out (i, j)->Green = 0;
-        out (i, j)->Blue = 0;
-        out (i, j)->Alpha = 0;
-      } else if (minShapeIndex == 0) {
-        out (i, j)->Red = 255;
-        out (i, j)->Green = 0;
-        out (i, j)->Blue = 0;
-        out (i, j)->Alpha = 255;
-      } else if (minShapeIndex == 1) {
-        out (i, j)->Red = 0;
-        out (i, j)->Green = 255;
-        out (i, j)->Blue = 0;
-        out (i, j)->Alpha = 255;
-      } else if (minShapeIndex == 2) {
-        out (i, j)->Red = 0;
-        out (i, j)->Green = 0;
-        out (i, j)->Blue = 255;
-        out (i, j)->Alpha = 255;
-      } else if (minShapeIndex == 3) {
-        out (i, j)->Red = 255;
-        out (i, j)->Green = 255;
-        out (i, j)->Blue = 0;
-        out (i, j)->Alpha = 255;
-      }
-    }
-  }
-*/
-
-  for (int i = 0; i < SIZE; i++) {
-    for (int j = 0; j < SIZE; j++) {
-      Point tmp = raycast (i, j);
+      Point target (i, j, 0);
+      Point tmp = raycast (camera, target, 4);
       float max = tmp.x;
       if (max < tmp.y) max = tmp.y;
       if (max < tmp.z) max = tmp.z;
-      //cout << i << " " << j << " " << max << endl;
       if (max > 1) {
         out (i, j)->Red = tmp.x / max * 255;
         out (i, j)->Green = tmp.y / max * 255;
@@ -123,32 +88,35 @@ int main() {
         out (i, j)->Alpha = 255;
       }
     }
-   // out.WriteToFile ("hw5.bmp");
   }
   out.WriteToFile ("hw5.bmp");
 }
 
-Point raycast(int i, int j) {
-  Point target (i, j, 0);
-  Ray r (camera, target);
+Point raycast(Point source, Point target, int depth) {
+  if (depth == 0) {
+    Point ret;
+    return ret;
+  }
+
+  Ray r (source, target);
   int minShapeIndex = -1;
   float minLength = 10000000;
 
   for (int k = 0; k < sphereList.size(); k++) {
-    Point tmp = sphereList[k].raycastHit (r, camera); 
-    if (!(tmp == camera)) {
-      if (minLength > (camera - tmp).length()) {
-        minLength = (camera - tmp).length();
+    Point tmp = sphereList[k].raycastHit (r, source); 
+    if (!(tmp == source)) {
+      if (minLength > (source - tmp).length()) {
+        minLength = (source - tmp).length();
         minShapeIndex = k;
       }
     }
   }
 
   for (int k = 0; k < triangleList.size(); k++) {
-    Point tmp = triangleList[k].raycastHit (r, camera);
-    if (!(tmp == camera)) {
-      if (minLength > (camera - tmp).length()) {
-        minLength = (camera - tmp).length();
+    Point tmp = triangleList[k].raycastHit (r, source);
+    if (!(tmp == source)) {
+      if (minLength > (source - tmp).length()) {
+        minLength = (source - tmp).length();
         minShapeIndex = k + sphereList.size();
       }
     }
@@ -159,8 +127,9 @@ Point raycast(int i, int j) {
     return ret;
   }
 
-  Point hit = minShapeIndex >= sphereList.size() ? triangleList[minShapeIndex - sphereList.size()].raycastHit (r, camera) : sphereList[minShapeIndex].raycastHit (r, camera);
+  Point hit = minShapeIndex >= sphereList.size() ? triangleList[minShapeIndex - sphereList.size()].raycastHit (r, source) : sphereList[minShapeIndex].raycastHit (r, source);
   Point normal = minShapeIndex >= sphereList.size() ? triangleList[minShapeIndex - sphereList.size()].getNormal (hit) : sphereList[minShapeIndex].getNormal (hit);
+  Point viewNormal = (camera - hit).normalize();
   Material mat = minShapeIndex >= sphereList.size() ? triangleList[minShapeIndex - sphereList.size()].mat : sphereList[minShapeIndex].mat;
   
   Point ret = mat.ambient * mat.ambientConst;
@@ -169,18 +138,23 @@ Point raycast(int i, int j) {
     Point lightNormal = (lightList[k].position - hit).normalize();
     Point diffuseLight = (normal * lightNormal) > 0 ? lightList[k].color.componentProduct (mat.diffuse) * mat.diffuseConst * (normal * lightNormal) : lightList[k].color * 0;
     Point reflectNormal = normal * 2 * (lightNormal * normal) - lightNormal;
-    Point viewNormal = (camera - hit).normalize();
+    // Point viewNormal = (camera - hit).normalize();
     Point specularLight = lightList[k].color.componentProduct (mat.specular) * mat.specularConst * pow (reflectNormal * viewNormal, mat.gloss);
     float rayContribution = shadowRay (hit, lightList[k].position);
-//    float rayContribution = 0.0;
     ret = ret + (diffuseLight + specularLight) * rayContribution;
+    /*
     if (rayContribution == 0.0) {
       cout << "cord ";
       cout << i << " " << j << " " << k << endl;
     }
+    */
   }
 
-  return ret;
+  Point l = hit - source;
+  Point reflectTarget = hit + l - normal * 2 * (l * normal);
+  Point reflectLight = raycast (hit, reflectTarget, depth - 1);
+
+  return ret * (1 - mat.alpha) * (1 - mat.beta) + reflectLight * (1 - mat.alpha) * mat.beta ;
   
 }
 
@@ -192,11 +166,13 @@ float shadowRay (Point hit, Point light) {
     Point tmp = sphereList[i].raycastHit (shadow, hit);
     if (!(tmp == hit)) {
       if ((tmp - hit).length() < distance) {
+        /*
         cout << "sphere hit ";
         hit.print();
         cout << "sphere tmp ";
         tmp.print();
         cout << "sphere dist " << (tmp - hit).length() << endl;
+        */
         count++;
       }
     }
@@ -205,11 +181,13 @@ float shadowRay (Point hit, Point light) {
     Point tmp = triangleList[i].raycastHit (shadow, hit);
     if (!(tmp == hit)) {
       if ((tmp - hit).length() < distance) {
+        /*
         cout << "Triangle hit ";
         hit.print();
         cout << "Triangle tmp ";
         tmp.print();
         cout << "Triangle dist " << (tmp - hit).length() << endl;
+        */
         count++;
       }
     }
