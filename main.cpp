@@ -41,38 +41,50 @@ int main() {
   Light l2 (lightPos2, lightColor);
   //lightList.push_back (l2);
 
-  Point o1 (500, 650, -1000);
-  Point o2 (200, 250, 0);
-  Point o3 (150, 250, 0);
+  Point o1 (500, 1550, -1500);
+  Point o2 (500, 750, -1500);
+  Point o3 (600, 650, -1500);
   Material m1 (CYAN, CYAN, CYAN, 0, 0, 0.1, 0.4, 0.5, 50, 1);
   Material m2 (GREEN, GREEN, GREEN, 0, 0, 0.1, 0.4, 0.5, 50, 1);
   Material m3 (BLUE, BLUE, BLUE, 0, 0, 0.1, 0.4, 0.5, 50, 1);
   Sphere s1 (o1, 100, m1);
-  Sphere s2 (o2, 50, m2);
-  Sphere s3 (o3, 50, m3);
+  Sphere s2 (o2, 100, m2);
+  Sphere s3 (o3, 100, m3);
   sphereList.push_back(s1); 
 //  sphereList.push_back(s2); 
 //  sphereList.push_back(s3); 
 
   Point p1 (-700, -700, -2900);
-  Point p2 (-700, 1700, -2900);
+  Point p2 (1700, -700, -2900);
   Point p3 (1700, 1700, -2900);
-  Point p4 (1700, -700, -2900);
-  Point p5 (-700, -700, -500);
-  Point p6 (-700, 1700, -500);
-  Point p7 (1700, 1700, -500);
-  Point p8 (1700, -700, -500);
-  Material m4 (WHITE, WHITE, WHITE, 0, 0.5, 0.1, 0.4, 0.5, 100, 1);
-  drawRect (p1, p2, p3, p4, m4);
-  drawRect (p1, p4, p8, p5, m4);
-  drawRect (p3, p7, p8, p4, m4);
-  drawRect (p2, p6, p7, p3, m4);
-  drawRect (p1, p5, p6, p2, m4);
+  Point p4 (-700, 1700, -2900);
+  Point p5 (-700, -700, 1000);
+  Point p6 (1700, -700, 1000);
+  Point p7 (1700, 1700, 1000);
+  Point p8 (-700, 1700, 1000);
+  Material m4 (WHITE, WHITE, WHITE, 0, 0, 0.1, 0.4, 0.5, 100, 1);
+  Material m5 (WHITE, WHITE, WHITE, 0, 0.9, 0.1, 0.4, 0.5, 100, 1);
+  drawRect (p1, p2, p3, p4, m4); // Front Face
+  drawRect (p1, p4, p8, p5, m4); // Top Face
+  drawRect (p3, p7, p8, p4, m4); // Right Face
+  drawRect (p2, p6, p7, p3, m4); // Bottom Face
+  drawRect (p1, p5, p6, p2, m4); // Left Face
+  drawRect (p8, p7, p6, p5, m4); // Back Face
+
+  Point glass1 (500 - 1000 / sqrt(3), 450, -500);
+  Point glass2 (500, 450, -2000);
+  Point glass3 (500 + 1000 / sqrt(3), 450, -500);
+  Point glass4 (500 - 1000 / sqrt(3), 1700, -500);
+  Point glass5 (500, 1700, -2000);
+  Point glass6 (500 + 1000 / sqrt(3), 1700, -500);
+  Material glassMat (WHITE, WHITE, WHITE, 0, 1, 0.1, 0.4, 0.5, 100, 1);
+  drawRect (glass1, glass2, glass5, glass4, glassMat);
+  drawRect (glass2, glass3, glass6, glass5, glassMat);
 
   for (int i = 0; i < SIZE; i++) {
     for (int j = 0; j < SIZE; j++) {
       Point target (i, j, 0);
-      Point tmp = raycast (camera, target, 4);
+      Point tmp = raycast (camera, target, 6);
       float max = tmp.x;
       if (max < tmp.y) max = tmp.y;
       if (max < tmp.z) max = tmp.z;
@@ -196,8 +208,8 @@ float shadowRay (Point hit, Point light) {
 }
 
 void drawRect (Point p1, Point p2, Point p3, Point p4, Material mat) {
-  Triangle t1 (p1, p3, p2, mat);
-  Triangle t2 (p3, p1, p4, mat);
+  Triangle t1 (p1, p2, p3, mat);
+  Triangle t2 (p3, p4, p1, mat);
   triangleList.push_back (t1);
   triangleList.push_back (t2);
 }
