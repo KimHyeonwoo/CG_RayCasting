@@ -9,6 +9,7 @@
 #include <vector>
 
 #define SIZE 1000
+#define SUPERSAMPLE 1
 
 Point camera (SIZE / 2, SIZE / 2, SIZE);
 vector <Sphere> sphereList;
@@ -83,23 +84,30 @@ int main() {
 
   for (int i = 0; i < SIZE; i++) {
     for (int j = 0; j < SIZE; j++) {
-      Point target (i, j, 0);
-      Point tmp = raycast (camera, target, 6);
-      float max = tmp.x;
-      if (max < tmp.y) max = tmp.y;
-      if (max < tmp.z) max = tmp.z;
+      Point result;
+      for (int k = 0; k < SUPERSAMPLE; k++) {
+        for (int l = 0; l < SUPERSAMPLE; l++) {
+          Point target (i + k / SUPERSAMPLE, j + l / SUPERSAMPLE, 0);
+          result = result + raycast (camera, target, 6);
+        }
+      }
+      result = result / pow (SUPERSAMPLE, 2);
+      float max = result.x;
+      if (max < result.y) max = result.y;
+      if (max < result.z) max = result.z;
       if (max > 1) {
-        out (i, j)->Red = tmp.x / max * 255;
-        out (i, j)->Green = tmp.y / max * 255;
-        out (i, j)->Blue = tmp.z / max * 255;
+        out (i, j)->Red = result.x / max * 255;
+        out (i, j)->Green = result.y / max * 255;
+        out (i, j)->Blue = result.z / max * 255;
         out (i, j)->Alpha = 255;
       } else {
-        out (i, j)->Red = tmp.x * 255;
-        out (i, j)->Green = tmp.y * 255;
-        out (i, j)->Blue = tmp.z * 255;
+        out (i, j)->Red = result.x * 255;
+        out (i, j)->Green = result.y * 255;
+        out (i, j)->Blue = result.z * 255;
         out (i, j)->Alpha = 255;
       }
     }
+    out.WriteToFile ("hw5.bmp");
   }
   out.WriteToFile ("hw5.bmp");
 }
