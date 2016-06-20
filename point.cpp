@@ -37,7 +37,7 @@ Point Point :: operator/ (const float& f) {
 
 bool Point :: operator== (const Point& p) {
   Point tmp (x - p.x, y - p.y, z - p.z);
-  return tmp.length() < 0.01;
+  return tmp.length() < 0.1;
 }
 
 Point Point :: normalize() {

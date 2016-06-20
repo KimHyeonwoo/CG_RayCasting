@@ -13,11 +13,11 @@ Point Sphere :: raycastHit (Ray ray, Point noHit) {
   //ray.dir.print();
 
 	if (pow (b, 2) - c > 0) {
-		if (b - sqrt (pow (b, 2) - c) > 0) {
+		if (b - sqrt (pow (b, 2) - c) > 0.01) {
 			return ray.origin + ray.dir * (b - sqrt (pow (b, 2) - c));
 		}
 
-		else if (b + sqrt (pow (b, 2) - c) > 0) {
+		else if (b + sqrt (pow (b, 2) - c) > 0.01) {
 			return ray.origin + ray.dir * (b + sqrt (pow (b, 2) - c));
 		}
 
@@ -27,7 +27,7 @@ Point Sphere :: raycastHit (Ray ray, Point noHit) {
 	} 
 	
 	else if (pow (b, 2) - c == 0) {
-		if (b > 0) {
+		if (b > 0.01) {
 			return ray.origin + ray.dir * b;
 		}
 
