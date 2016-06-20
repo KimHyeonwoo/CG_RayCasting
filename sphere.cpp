@@ -11,7 +11,6 @@ Point Sphere :: raycastHit (Ray ray, Point noHit) {
 	float c = (origin - ray.origin) * (origin - ray.origin) - radius * radius;
 
   //ray.dir.print();
-  cout << b << " " << sqrt(c) << endl;
 
 	if (pow (b, 2) - c > 0) {
 		if (b - sqrt (pow (b, 2) - c) > 0) {

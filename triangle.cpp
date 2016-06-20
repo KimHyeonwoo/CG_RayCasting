@@ -19,7 +19,6 @@ Point Triangle :: raycastHit (Ray ray, Point noHit) {
   Point w = hit - p1;
   float s1 = ((u * v) * (w * v) - (v * v) * (w * u)) / ((u * v) * (u * v) - (u * u) * (v * v));
   float s2 = ((u * v) * (w * u) - (u * u) * (w * v)) / ((u * v) * (u * v) - (u * u) * (v * v));
-  cout << s1 << " " << s2 << endl;
   if (s1 >= 0 && s2 >= 0 && s1 + s2 <= 1) return hit;
   else return noHit;
 }
