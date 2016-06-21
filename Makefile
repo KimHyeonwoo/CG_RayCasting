@@ -1,5 +1,5 @@
 run: main
-	./main >> Log.txt
+	./main
 
 main: main.o point.o shape.o sphere.o triangle.o ray.o material.o light.o
 	g++ -o main main.o point.o shape.o sphere.o triangle.o ray.o material.o light.o bmp2/EasyBMP.cpp -lm -O3
