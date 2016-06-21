@@ -101,7 +101,7 @@ int main() {
       Point result;
       for (int k = 0; k < SUPERSAMPLE; k++) {
         for (int l = 0; l < SUPERSAMPLE; l++) {
-          Point target (i + k / SUPERSAMPLE, j + l / SUPERSAMPLE, 0);
+          Point target (i + (double) k / SUPERSAMPLE, j + (double) l / SUPERSAMPLE, 0);
           result = result + raycast (camera, target, 6);
         }
       }
