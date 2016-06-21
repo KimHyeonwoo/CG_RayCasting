@@ -8,8 +8,8 @@
 #include "light.h"
 #include <vector>
 
-#define SIZE 300
-#define SUPERSAMPLE 3
+#define SIZE 1000
+#define SUPERSAMPLE 4
 #define PI 3.141592
 
 Point camera (SIZE / 2, SIZE / 2, SIZE / 2);
@@ -32,6 +32,7 @@ Point YELLOW (1, 1, 0);
 Point CYAN (0, 1, 1);
 Point MAGENTA (1, 0, 1);
 Point WHITE (1, 1, 1);
+Point PINK (255 / 255.0, 186 / 255.0, 210 / 255.0);
 
 BMP checker;
 BMP baseball;
@@ -43,13 +44,13 @@ int main() {
   checker.ReadFromFile("texture.bmp");
   baseball.ReadFromFile("baseball.bmp");
 
-  Point lightPos (0.5 * SIZE, -0.45 * SIZE, -0.5 * SIZE);
-  Point lightColor (1, 1, 1);
+  Point lightPos (0, -0.45 * SIZE, -1.5 * SIZE);
+  Point lightColor (0.7, 0.7, 0.7);
   Light l1 (lightPos, lightColor);
   lightList.push_back (l1);
-  Point lightPos2 (0.25 * SIZE, 0.5 * SIZE, 0);
+  Point lightPos2 (SIZE, -0.45 * SIZE, -1.5 * SIZE);
   Light l2 (lightPos2, lightColor);
-  //lightList.push_back (l2);
+  lightList.push_back (l2);
 
   Point o1 (0.5 * SIZE, 1.55 * SIZE, -1.5 * SIZE);
   //Point o1 (0.5 * SIZE, 0.75 * SIZE, -1.5 * SIZE);
@@ -58,7 +59,7 @@ int main() {
   Point o4 (0.1 * SIZE, 0.5 * SIZE, -1.2 * SIZE);
   Material m1 (CYAN, CYAN, CYAN, 1.0, 1.0, 0.1, 0.4, 0.5, 50, 0.8);
   Material m2 (WHITE, WHITE, WHITE, 0, 0, 0.1, 0.4, 0.5, 50, 1);
-  Material m3 (BLUE, BLUE, BLUE, 0, 0, 0.1, 0.4, 0.5, 50, 1);
+  Material m3 (PINK, PINK, PINK, 0, 0, 0.1, 0.4, 0.5, 50, 1);
   Material sphereMat (MAGENTA, MAGENTA, MAGENTA, 0, 0, 0.1, 0.4, 0.5, 50, 1);
   Sphere s1 (o1, 0.1 * SIZE, sphereMat);
   Sphere s2 (o2, 0.1 * SIZE, m2);
@@ -78,12 +79,12 @@ int main() {
   Point p7 (1.7 * SIZE, 1.7 * SIZE, 1.0 * SIZE);
   Point p8 (-0.7 * SIZE, 1.7 * SIZE, 1.0 * SIZE);
   Material m4 (WHITE, WHITE, WHITE, 0, 0, 0.1, 0.4, 0.5, 100, 1);
-  Material m5 (WHITE, WHITE, WHITE, 0, 0.9, 0.1, 0.4, 0.5, 100, 1);
+  Material m5 (WHITE, WHITE, WHITE, 0, 0.2, 0.1, 0.4, 0.5, 100, 1);
   drawRect (p1, p2, p3, p4, m4); // Front Face
   drawRect (p1, p4, p8, p5, m3); // Top Face
   drawRect (p3, p7, p8, p4, m2); // Right Face
   drawRect (p2, p6, p7, p3, m3); // Bottom Face
-  drawRect (p1, p5, p6, p2, m2); // Left Face
+  drawRect (p1, p5, p6, p2, m5); // Left Face
   drawRect (p8, p7, p6, p5, m4); // Back Face
 
   Point glass1 (0.5 * SIZE - SIZE / sqrt(3), 1.1 * SIZE, -1.0 * SIZE);
@@ -122,6 +123,7 @@ int main() {
       }
     }
     out.WriteToFile ("hw5.bmp");
+    cout << i << endl;
   }
   out.WriteToFile ("hw5.bmp");
 }
@@ -254,7 +256,7 @@ Point getAmbient (int minShapeIndex, Point hit) {
     float v = (atan2 (sqrt (pow (n.x, 2) + pow (n.y, 2)), n.z) / PI);
     u = u > 0.2 ? u - 0.2 : u + 0.8;
     v = v > 0.8 ? 1 : v * 1.25;
-    Point ret (baseball (u * 400, v * 200)->Red, baseball (u * 400, v * 200)->Green, baseball (u * 400, v * 200)->Blue);
+    Point ret (baseball (u * 400, v * 200)->Red / 255.0, baseball (u * 400, v * 200)->Green / 255.0, baseball (u * 400, v * 200)->Blue / 255.0);
     return ret;
   }
   if (minShapeIndex == sphereList.size() || minShapeIndex == sphereList.size() + 1) {
@@ -263,7 +265,7 @@ Point getAmbient (int minShapeIndex, Point hit) {
     Point w = hit - triangleList[0].p2;
     float s1 = ((u * v) * (w * v) - (v * v) * (w * u)) / ((u * v) * (u * v) - (u * u) * (v * v));
     float s2 = ((u * v) * (w * u) - (u * u) * (w * v)) / ((u * v) * (u * v) - (u * u) * (v * v));
-    Point ret (checker (s1 * 283, s2 * 283)->Red, checker (s1 * 283, s2 * 283)->Green, checker (s1 * 283, s2 * 283)->Blue);
+    Point ret (checker (s1 * 283, s2 * 283)->Red / 255.0, checker (s1 * 283, s2 * 283)->Green / 255.0, checker (s1 * 283, s2 * 283)->Blue / 255.0);
     return ret;
   }
   return minShapeIndex < sphereList.size() ? sphereList[minShapeIndex].mat.ambient : triangleList[minShapeIndex - sphereList.size()].mat.ambient;
