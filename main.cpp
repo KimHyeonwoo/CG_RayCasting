@@ -8,7 +8,7 @@
 #include "light.h"
 #include <vector>
 
-#define SIZE 300
+#define SIZE 1000
 #define SUPERSAMPLE 1
 #define PI 3.141592
 
@@ -48,7 +48,7 @@ int main() {
   baseball.ReadFromFile("baseball.bmp");
 
   Point lightPos (0.5 * SIZE, -0.45 * SIZE, -0.5 * SIZE);
-  Point lightColor (1, 1, 1);
+  Point lightColor (2, 2, 2);
   Light l1 (lightPos, lightColor);
   lightList.push_back (l1);
   
@@ -66,7 +66,7 @@ int main() {
   for (int t = 0; t <= 100; t++) {
     sphereList.clear();
     Point o1 (-2.0 * SIZE + sqrt (t / 1000.0) * 11.0 * SIZE, -0.25 * SIZE + pow (t - 50, 2) / 7000 * SIZE, -1.5 * SIZE);
-    Material sphereMat (MAGENTA, MAGENTA, MAGENTA, 0, 0, 0.1, 0.4, 0.5, 50, 1);
+    Material sphereMat (MAGENTA, MAGENTA, MAGENTA, 0, 0, 0.3, 0.4, 0.3, 50, 1);
     Sphere s1 (o1, 0.5 * SIZE, sphereMat);
     sphereList.push_back(s1); 
 
@@ -241,7 +241,7 @@ Point getAmbient (int minShapeIndex, Point hit) {
     float v = (atan2 (sqrt (pow (n.x, 2) + pow (n.y, 2)), n.z) / PI);
     //u = u > 0.2 ? u - 0.2 : u + 0.8;
     //v = v > 0.8 ? 1 : v * 1.25;
-    Point ret (baseball (u * 400, v * 200)->Red, baseball (u * 400, v * 200)->Green, baseball (u * 400, v * 200)->Blue);
+    Point ret (baseball (u * 400, v * 200)->Red / 255.0, baseball (u * 400, v * 200)->Green / 255.0, baseball (u * 400, v * 200)->Blue / 255.0);
     return ret;
   }
   if (minShapeIndex == sphereList.size() || minShapeIndex == sphereList.size() + 1) {
@@ -250,7 +250,7 @@ Point getAmbient (int minShapeIndex, Point hit) {
     Point w = hit - triangleList[0].p2;
     float s1 = ((u * v) * (w * v) - (v * v) * (w * u)) / ((u * v) * (u * v) - (u * u) * (v * v));
     float s2 = ((u * v) * (w * u) - (u * u) * (w * v)) / ((u * v) * (u * v) - (u * u) * (v * v));
-    Point ret (checker (s1 * 283, s2 * 283)->Red, checker (s1 * 283, s2 * 283)->Green, checker (s1 * 283, s2 * 283)->Blue);
+    Point ret (checker (s1 * 283, s2 * 283)->Red / 255.0, checker (s1 * 283, s2 * 283)->Green / 255.0, checker (s1 * 283, s2 * 283)->Blue / 255.0);
     return ret;
   }
   return minShapeIndex < sphereList.size() ? sphereList[minShapeIndex].mat.ambient : triangleList[minShapeIndex - sphereList.size()].mat.ambient;
